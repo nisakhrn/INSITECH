@@ -29,8 +29,8 @@ st.markdown("""
     
     /* Main Background */
     .stApp {
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
-        color: #e2e8f0;
+        background: #052659;
+        color: #FFFFFF;
     }
     
     /* Hide Streamlit Branding */
@@ -56,7 +56,7 @@ st.markdown("""
         transform: translateX(-50%);
         width: 600px;
         height: 600px;
-        background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+        background: radial-gradient(circle, rgba(137, 207, 240, 0.3) 0%, transparent 70%);
         border-radius: 50%;
         pointer-events: none;
         animation: pulse 4s ease-in-out infinite;
@@ -73,12 +73,12 @@ st.markdown("""
         top: 1rem;
         right: 1rem;
         z-index: 1000;
-        background: rgba(30, 41, 59, 0.9);
+        background: rgba(255, 255, 255, 0.9);
         backdrop-filter: blur(10px);
         padding: 0.5rem;
         border-radius: 8px;
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        border: 2px solid rgba(137, 207, 240, 0.6);
+        box-shadow: 0 4px 6px rgba(0, 103, 165, 0.3);
     }
     
     /* Title Styling - Tech Style */
@@ -86,14 +86,14 @@ st.markdown("""
         text-align: center;
         font-size: 4.5rem;
         font-weight: 700;
-        background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%);
+        background: linear-gradient(135deg, #89CFF0 0%, #FFFFFF 50%, #89CFF0 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
         margin-bottom: 0.5rem;
         margin-top: 0;
         letter-spacing: 0.1em;
-        text-shadow: 0 0 40px rgba(59, 130, 246, 0.5);
+        text-shadow: 0 0 40px rgba(137, 207, 240, 0.8);
         position: relative;
         animation: glow 3s ease-in-out infinite;
     }
@@ -105,10 +105,10 @@ st.markdown("""
     
     .subtitle {
         text-align: center;
-        color: #94a3b8;
+        color: #FFFFFF;
         font-size: 0.95rem;
         margin-bottom: 2.5rem;
-        font-weight: 400;
+        font-weight: 500;
         line-height: 1.6;
         letter-spacing: 0.05em;
         text-transform: uppercase;
@@ -116,7 +116,7 @@ st.markdown("""
     
     /* Search Box Container */
     .search-container {
-        max-width: 100%;
+        max-width: 600px;
         margin: 0 auto 3rem auto;
         padding: 0;
     }
@@ -129,6 +129,9 @@ st.markdown("""
     /* Remove ALL white containers and wrappers */
     .stTextInput {
         background: transparent !important;
+        overflow: visible !important;
+        display: flex !important;
+        justify-content: center !important;
     }
     
     .stTextInput > div {
@@ -136,6 +139,9 @@ st.markdown("""
         box-shadow: none !important;
         border: none !important;
         padding: 0 !important;
+        overflow: visible !important;
+        display: flex !important;
+        justify-content: center !important;
     }
     
     .stTextInput > div > div {
@@ -143,63 +149,69 @@ st.markdown("""
         box-shadow: none !important;
         border: none !important;
         padding: 0 !important;
+        overflow: visible !important;
+        border-radius: 30px !important;
+        max-width: 600px !important;
+        width: 100% !important;
     }
     
     /* Input Styling - Tech Futuristic */
     .stTextInput > div > div > input {
-        background: rgba(30, 41, 59, 0.6) !important;
+        background: rgba(255, 255, 255, 0.9) !important;
         backdrop-filter: blur(10px) !important;
-        border: 1px solid rgba(59, 130, 246, 0.3) !important;
+        border: 2px solid rgba(137, 207, 240, 0.6) !important;
         border-radius: 30px !important;
         padding: 0.9rem 1.75rem !important;
         font-size: 1rem !important;
-        color: #e2e8f0 !important;
-        font-weight: 400 !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+        color: #0067A5 !important;
+        font-weight: 500 !important;
+        box-shadow: 0 4px 12px rgba(123, 187, 255, 0.2) !important;
         transition: all 0.3s ease !important;
         line-height: 1.5 !important;
         min-height: 48px !important;
+        height: 48px !important;
         width: 100% !important;
+        display: block !important;
     }
     
     .stTextInput > div > div > input::placeholder {
-        color: #64748b !important;
+        color: #4997D0 !important;
         font-weight: 400 !important;
     }
     
     .stTextInput > div > div > input:hover {
-        border-color: rgba(59, 130, 246, 0.6) !important;
-        box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3) !important;
+        border-color: rgba(73, 151, 208, 0.8) !important;
+        box-shadow: 0 8px 24px rgba(137, 207, 240, 0.5) !important;
     }
     
     .stTextInput > div > div > input:focus {
-        border-color: #3b82f6 !important;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2), 0 8px 32px rgba(59, 130, 246, 0.4) !important;
+        border-color: #89CFF0 !important;
+        box-shadow: 0 0 0 3px rgba(137, 207, 240, 0.3), 0 8px 32px rgba(73, 151, 208, 0.6) !important;
         outline: none !important;
     }
     
     /* SelectBox Label */
     .stSelectbox > label {
         font-size: 0.75rem !important;
-        color: #94a3b8 !important;
-        font-weight: 400 !important;
+        color: #FFFFFF !important;
+        font-weight: 500 !important;
         margin-bottom: 0.25rem !important;
     }
     
     /* SelectBox Styling - Tech Theme */
     .stSelectbox > div > div {
-        background: rgba(30, 41, 59, 0.8) !important;
+        background: rgba(255, 255, 255, 0.9) !important;
         backdrop-filter: blur(10px) !important;
-        border: 1px solid rgba(59, 130, 246, 0.3) !important;
+        border: 2px solid rgba(137, 207, 240, 0.5) !important;
         border-radius: 8px !important;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
-        color: #e2e8f0 !important;
+        box-shadow: 0 2px 8px rgba(123, 187, 255, 0.2) !important;
+        color: #6B63B5 !important;
         font-weight: 400 !important;
         font-size: 0.875rem !important;
     }
     
     .stSelectbox [data-baseweb="select"] > div {
-        color: #e2e8f0 !important;
+        color: #6B63B5 !important;
         font-weight: 400 !important;
         font-size: 0.875rem !important;
     }
@@ -232,7 +244,7 @@ st.markdown("""
     
     /* Button Styling */
     .stButton > button {
-        background: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%) !important;
+        background: linear-gradient(135deg, #0067A5 0%, #4997D0 100%) !important;
         color: white !important;
         border: none !important;
         border-radius: 50px !important;
@@ -252,44 +264,44 @@ st.markdown("""
     
     /* Results Card - Tech Style */
     .result-card {
-        background: rgba(30, 41, 59, 0.6);
+        background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(10px);
         border-radius: 12px;
         padding: 1.5rem 1.8rem;
         margin-bottom: 1.5rem;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 4px 12px rgba(0, 103, 165, 0.3);
         transition: all 0.3s ease;
-        border: 1px solid rgba(59, 130, 246, 0.2);
+        border: 2px solid rgba(137, 207, 240, 0.4);
     }
     
     .result-card:hover {
-        box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+        box-shadow: 0 8px 24px rgba(73, 151, 208, 0.5);
         transform: translateY(-2px);
-        border-color: rgba(59, 130, 246, 0.5);
+        border-color: rgba(137, 207, 240, 0.7);
     }
     
     .result-rank {
         display: inline-block;
-        background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+        background: linear-gradient(135deg, #0067A5 0%, #4997D0 100%);
         color: white;
         font-weight: 700;
         padding: 0.4rem 1rem;
         border-radius: 20px;
         font-size: 0.9rem;
         margin-bottom: 0.8rem;
-        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+        box-shadow: 0 2px 8px rgba(0, 103, 165, 0.4);
     }
     
     .result-url {
-        color: #94a3b8;
+        color: #4997D0;
         font-size: 0.875rem;
         margin-bottom: 0.3rem;
         line-height: 1.4;
     }
     
     .result-source {
-        background: rgba(59, 130, 246, 0.2);
-        color: #60a5fa;
+        background: rgba(137, 207, 240, 0.25);
+        color: #0067A5;
         font-weight: 600;
         font-size: 0.75rem;
         padding: 0.2rem 0.6rem;
@@ -297,11 +309,11 @@ st.markdown("""
         display: inline-block;
         margin-right: 0.5rem;
         text-transform: uppercase;
-        border: 1px solid rgba(59, 130, 246, 0.3);
+        border: 1px solid rgba(123, 187, 255, 0.4);
     }
     
     .result-title {
-        color: #60a5fa;
+        color: #0067A5;
         font-weight: 600;
         font-size: 1.25rem;
         margin: 0.5rem 0;
@@ -312,59 +324,59 @@ st.markdown("""
     }
     
     .result-title:hover {
-        color: #3b82f6;
+        color: #4997D0;
         text-decoration: underline;
     }
     
     .result-snippet {
-        color: #cbd5e1;
+        color: #367588;
         font-size: 0.95rem;
         line-height: 1.6;
         margin: 0.6rem 0;
     }
     
     .result-score {
-        color: #06b6d4;
+        color: #0067A5;
         font-weight: 600;
         font-size: 0.85rem;
-        background: rgba(6, 182, 212, 0.15);
+        background: rgba(137, 207, 240, 0.25);
         display: inline-block;
         padding: 0.25rem 0.75rem;
         border-radius: 12px;
         margin-top: 0.5rem;
-        border: 1px solid rgba(6, 182, 212, 0.3);
+        border: 1px solid rgba(73, 151, 208, 0.4);
     }
     
     /* Section Headers - Tech Style */
     .section-header {
-        color: #e2e8f0;
+        color: #FFFFFF;
         font-size: 1.25rem;
         font-weight: 600;
         margin-bottom: 1.25rem;
         margin-top: 2rem;
         padding-left: 0.75rem;
-        border-left: 4px solid #3b82f6;
-        text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        border-left: 4px solid #89CFF0;
+        text-shadow: 0 0 20px rgba(137, 207, 240, 0.5);
     }
     
     /* Info Box - Tech Style */
     .info-box {
-        background: rgba(30, 41, 59, 0.6);
+        background: rgba(255, 255, 255, 0.85);
         backdrop-filter: blur(10px);
-        border-left: 4px solid #3b82f6;
+        border-left: 4px solid #7BBBFF;
         border-radius: 8px;
         padding: 1rem 1.25rem;
         margin: 2rem auto;
         max-width: 900px;
-        color: #cbd5e1;
+        color: #6B63B5;
         font-size: 0.875rem;
         line-height: 1.6;
-        border: 1px solid rgba(59, 130, 246, 0.2);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        border: 2px solid rgba(123, 187, 255, 0.3);
+        box-shadow: 0 4px 12px rgba(123, 187, 255, 0.3);
     }
     
     .info-box strong {
-        color: #60a5fa;
+        color: #8B7FFF;
         font-size: 0.9rem;
     }
     
@@ -402,15 +414,20 @@ st.markdown("""
     
     /* Footer Styling - Tech Theme */
     .footer-text {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
         text-align: center;
-        color: #64748b;
-        padding: 1.5rem;
+        color: #FFFFFF;
+        padding: 1rem;
         font-size: 0.8rem;
-        font-weight: 400;
-        background: transparent;
-        margin-top: 3rem;
-        margin-bottom: 1rem;
-        text-shadow: 0 0 10px rgba(100, 116, 139, 0.3);
+        font-weight: 500;
+        background: rgba(5, 38, 89, 0.95);
+        backdrop-filter: blur(10px);
+        border-top: 2px solid rgba(137, 207, 240, 0.4);
+        z-index: 1000;
+        text-shadow: 0 0 10px rgba(123, 187, 255, 0.2);
     }
     
     /* Pagination Styling - Tech Theme */
@@ -425,10 +442,10 @@ st.markdown("""
     }
     
     .stButton > button[kind="secondary"] {
-        background: rgba(30, 41, 59, 0.8) !important;
+        background: rgba(255, 255, 255, 0.9) !important;
         backdrop-filter: blur(10px) !important;
-        color: #60a5fa !important;
-        border: 1px solid rgba(59, 130, 246, 0.3) !important;
+        color: #0067A5 !important;
+        border: 2px solid rgba(137, 207, 240, 0.5) !important;
         border-radius: 4px !important;
         padding: 0.4rem 0.8rem !important;
         min-width: 36px !important;
@@ -441,27 +458,27 @@ st.markdown("""
     }
     
     .stButton > button[kind="secondary"]:hover {
-        background: rgba(59, 130, 246, 0.2) !important;
-        border-color: #3b82f6 !important;
-        box-shadow: 0 0 12px rgba(59, 130, 246, 0.4) !important;
+        background: rgba(137, 207, 240, 0.3) !important;
+        border-color: #89CFF0 !important;
+        box-shadow: 0 0 12px rgba(137, 207, 240, 0.6) !important;
     }
     
     .stButton > button[kind="primary"] {
-        background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%) !important;
+        background: linear-gradient(135deg, #0067A5 0%, #4997D0 100%) !important;
         color: white !important;
-        border: 1px solid rgba(59, 130, 246, 0.5) !important;
+        border: 2px solid rgba(137, 207, 240, 0.5) !important;
         border-radius: 4px !important;
         padding: 0.4rem 0.8rem !important;
         min-width: 36px !important;
         height: 36px !important;
         font-size: 0.875rem !important;
         font-weight: 700 !important;
-        box-shadow: 0 0 16px rgba(59, 130, 246, 0.6) !important;
+        box-shadow: 0 0 16px rgba(0, 103, 165, 0.6) !important;
         margin: 0 !important;
     }
     
     .page-info {
-        color: #94a3b8;
+        color: #FFFFFF;
         font-size: 0.8rem;
         margin: 0.75rem 0 1rem 0;
         text-align: left;
@@ -869,20 +886,6 @@ if search_button or st.session_state.search_performed:
                         display_result(doc, score, rank, active_query)
                 else:
                     st.info("Tidak ada hasil.")
-
-# ==========================
-# FOOTER INFO
-# ==========================
-st.markdown("<br/><br/>", unsafe_allow_html=True)
-st.markdown("""
-<div class="info-box">
-    <strong>💡 Tentang Sistem INSITECH:</strong><br/><br/>
-    INSITECH menggunakan dua algoritma pencarian terkemuka untuk penelusuran dokumen:<br/><br/>
-    • <strong>TF-IDF (Term Frequency-Inverse Document Frequency)</strong>: Algoritma perangkingan berbasis frekuensi kemunculan term dalam dokumen<br/>
-    • <strong>BM25 (Best Matching 25)</strong>: Algoritma perangkingan probabilistik yang lebih canggih dengan mempertimbangkan panjang dokumen<br/><br/>
-    Sistem ini dirancang khusus untuk penelusuran dokumen teknologi dan kecerdasan buatan (AI).
-</div>
-""", unsafe_allow_html=True)
 
 st.markdown("""
 <div class="footer-text">

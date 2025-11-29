@@ -1,6 +1,7 @@
 import streamlit as st
 import json
 import numpy as np
+import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from rank_bm25 import BM25Okapi
 
@@ -28,7 +29,8 @@ st.markdown("""
     
     /* Main Background */
     .stApp {
-        background: linear-gradient(135deg, #e0f2fe 0%, #bfdbfe 50%, #dbeafe 100%);
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        color: #e2e8f0;
     }
     
     /* Hide Streamlit Branding */
@@ -36,87 +38,170 @@ st.markdown("""
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
-    /* Title Styling */
+    /* Header Container */
+    .header-container {
+        text-align: center;
+        padding: 3rem 2rem 2rem 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        position: relative;
+    }
+    
+    /* Glowing effect background */
+    .header-container::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+        animation: pulse 4s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { opacity: 0.5; transform: translateX(-50%) scale(1); }
+        50% { opacity: 0.8; transform: translateX(-50%) scale(1.1); }
+    }
+    
+    /* Algorithm Selector in Top Right */
+    .algorithm-selector {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 1000;
+        background: rgba(30, 41, 59, 0.9);
+        backdrop-filter: blur(10px);
+        padding: 0.5rem;
+        border-radius: 8px;
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Title Styling - Tech Style */
     .main-title {
         text-align: center;
-        font-size: 4rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, #1e40af 0%, #0891b2 100%);
+        font-size: 4.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        margin-bottom: 1rem;
-        margin-top: 2rem;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 0.5rem;
+        margin-top: 0;
+        letter-spacing: 0.1em;
+        text-shadow: 0 0 40px rgba(59, 130, 246, 0.5);
+        position: relative;
+        animation: glow 3s ease-in-out infinite;
+    }
+    
+    @keyframes glow {
+        0%, 100% { filter: brightness(1); }
+        50% { filter: brightness(1.2); }
     }
     
     .subtitle {
         text-align: center;
-        color: #075985;
-        font-size: 1.1rem;
-        margin-bottom: 3rem;
-        font-weight: 600;
+        color: #94a3b8;
+        font-size: 0.95rem;
+        margin-bottom: 2.5rem;
+        font-weight: 400;
         line-height: 1.6;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
     }
     
     /* Search Box Container */
     .search-container {
-        max-width: 1000px;
+        max-width: 100%;
         margin: 0 auto 3rem auto;
+        padding: 0;
     }
     
     /* Input Label */
     .stTextInput > label {
-        color: #0c4a6e !important;
-        font-weight: 600 !important;
-        font-size: 1rem !important;
-        margin-bottom: 0.5rem !important;
+        display: none !important;
     }
     
-    /* Input Styling */
+    /* Remove ALL white containers and wrappers */
+    .stTextInput {
+        background: transparent !important;
+    }
+    
+    .stTextInput > div {
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+    }
+    
+    .stTextInput > div > div {
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+    }
+    
+    /* Input Styling - Tech Futuristic */
     .stTextInput > div > div > input {
-        background: white !important;
-        border: 3px solid #93c5fd !important;
-        border-radius: 50px !important;
-        padding: 1.5rem 2rem !important;
-        font-size: 1.2rem !important;
-        color: #0c4a6e !important;
-        font-weight: 500 !important;
-        box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2) !important;
+        background: rgba(30, 41, 59, 0.6) !important;
+        backdrop-filter: blur(10px) !important;
+        border: 1px solid rgba(59, 130, 246, 0.3) !important;
+        border-radius: 30px !important;
+        padding: 0.9rem 1.75rem !important;
+        font-size: 1rem !important;
+        color: #e2e8f0 !important;
+        font-weight: 400 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
         transition: all 0.3s ease !important;
+        line-height: 1.5 !important;
+        min-height: 48px !important;
+        width: 100% !important;
     }
     
     .stTextInput > div > div > input::placeholder {
-        color: #7dd3fc !important;
-        font-weight: 500 !important;
+        color: #64748b !important;
+        font-weight: 400 !important;
+    }
+    
+    .stTextInput > div > div > input:hover {
+        border-color: rgba(59, 130, 246, 0.6) !important;
+        box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3) !important;
     }
     
     .stTextInput > div > div > input:focus {
-        box-shadow: 0 15px 40px rgba(59, 130, 246, 0.35) !important;
         border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2), 0 8px 32px rgba(59, 130, 246, 0.4) !important;
         outline: none !important;
     }
     
     /* SelectBox Label */
     .stSelectbox > label {
-        color: #0c4a6e !important;
-        font-weight: 600 !important;
-        font-size: 1rem !important;
+        font-size: 0.75rem !important;
+        color: #94a3b8 !important;
+        font-weight: 400 !important;
+        margin-bottom: 0.25rem !important;
     }
     
-    /* SelectBox Styling */
+    /* SelectBox Styling - Tech Theme */
     .stSelectbox > div > div {
-        background: white !important;
-        border: 2px solid #93c5fd !important;
-        border-radius: 25px !important;
-        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.15) !important;
-        color: #0c4a6e !important;
-        font-weight: 600 !important;
+        background: rgba(30, 41, 59, 0.8) !important;
+        backdrop-filter: blur(10px) !important;
+        border: 1px solid rgba(59, 130, 246, 0.3) !important;
+        border-radius: 8px !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+        color: #e2e8f0 !important;
+        font-weight: 400 !important;
+        font-size: 0.875rem !important;
     }
     
     .stSelectbox [data-baseweb="select"] > div {
-        color: #0c4a6e !important;
-        font-weight: 600 !important;
+        color: #e2e8f0 !important;
+        font-weight: 400 !important;
+        font-size: 0.875rem !important;
     }
     
     /* Slider Label */
@@ -165,104 +250,142 @@ st.markdown("""
         box-shadow: 0 10px 30px rgba(37, 99, 235, 0.5) !important;
     }
     
-    /* Results Card */
+    /* Results Card - Tech Style */
     .result-card {
-        background: white;
-        border-radius: 20px;
-        padding: 1.8rem;
-        margin-bottom: 1.2rem;
-        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.15);
+        background: rgba(30, 41, 59, 0.6);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 1.5rem 1.8rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         transition: all 0.3s ease;
-        border: 2px solid #bfdbfe;
+        border: 1px solid rgba(59, 130, 246, 0.2);
     }
     
     .result-card:hover {
-        box-shadow: 0 10px 35px rgba(59, 130, 246, 0.25);
-        transform: translateY(-3px);
-        border-color: #60a5fa;
+        box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+        transform: translateY(-2px);
+        border-color: rgba(59, 130, 246, 0.5);
     }
     
     .result-rank {
         display: inline-block;
-        background: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
+        background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
         color: white;
-        font-weight: 800;
-        padding: 0.5rem 1.2rem;
-        border-radius: 25px;
-        font-size: 1rem;
-        margin-right: 1rem;
-        box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3);
+        font-weight: 700;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        margin-bottom: 0.8rem;
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+    }
+    
+    .result-url {
+        color: #94a3b8;
+        font-size: 0.875rem;
+        margin-bottom: 0.3rem;
+        line-height: 1.4;
+    }
+    
+    .result-source {
+        background: rgba(59, 130, 246, 0.2);
+        color: #60a5fa;
+        font-weight: 600;
+        font-size: 0.75rem;
+        padding: 0.2rem 0.6rem;
+        border-radius: 8px;
+        display: inline-block;
+        margin-right: 0.5rem;
+        text-transform: uppercase;
+        border: 1px solid rgba(59, 130, 246, 0.3);
     }
     
     .result-title {
-        color: #1e3a8a;
-        font-weight: 700;
-        font-size: 1.2rem;
-        margin: 0.8rem 0;
-        line-height: 1.5;
+        color: #60a5fa;
+        font-weight: 600;
+        font-size: 1.25rem;
+        margin: 0.5rem 0;
+        line-height: 1.4;
+        cursor: pointer;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+    
+    .result-title:hover {
+        color: #3b82f6;
+        text-decoration: underline;
+    }
+    
+    .result-snippet {
+        color: #cbd5e1;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin: 0.6rem 0;
     }
     
     .result-score {
-        color: #0891b2;
-        font-weight: 700;
-        font-size: 1rem;
-        background: #cffafe;
+        color: #06b6d4;
+        font-weight: 600;
+        font-size: 0.85rem;
+        background: rgba(6, 182, 212, 0.15);
         display: inline-block;
-        padding: 0.3rem 1rem;
-        border-radius: 15px;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        margin-top: 0.5rem;
+        border: 1px solid rgba(6, 182, 212, 0.3);
     }
     
-    /* Section Headers */
+    /* Section Headers - Tech Style */
     .section-header {
-        color: #1e3a8a;
-        font-size: 2.2rem;
-        font-weight: 800;
-        margin-bottom: 2rem;
-        text-align: center;
-        padding: 1.5rem;
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.15);
-        border: 2px solid #bfdbfe;
+        color: #e2e8f0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1.25rem;
+        margin-top: 2rem;
+        padding-left: 0.75rem;
+        border-left: 4px solid #3b82f6;
+        text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
     }
     
-    /* Info Box */
+    /* Info Box - Tech Style */
     .info-box {
-        background: white;
-        border-left: 6px solid #0891b2;
-        border-radius: 15px;
-        padding: 1.5rem 2rem;
+        background: rgba(30, 41, 59, 0.6);
+        backdrop-filter: blur(10px);
+        border-left: 4px solid #3b82f6;
+        border-radius: 8px;
+        padding: 1rem 1.25rem;
         margin: 2rem auto;
-        max-width: 1200px;
-        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.15);
-        color: #0c4a6e;
-        font-size: 1rem;
-        line-height: 1.8;
+        max-width: 900px;
+        color: #cbd5e1;
+        font-size: 0.875rem;
+        line-height: 1.6;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
     
     .info-box strong {
-        color: #1e3a8a;
-        font-size: 1.1rem;
+        color: #60a5fa;
+        font-size: 0.9rem;
     }
     
     /* Comparison Column */
     .comparison-column {
         background: white;
-        border-radius: 25px;
-        padding: 2rem;
-        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.15);
-        border: 2px solid #bfdbfe;
-        min-height: 400px;
+        border-radius: 12px;
+        padding: 1.25rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+        min-height: 300px;
     }
     
     .comparison-column h3 {
-        color: #1e3a8a !important;
-        font-weight: 800 !important;
-        font-size: 1.8rem !important;
+        color: #1e293b !important;
+        font-weight: 600 !important;
+        font-size: 1.1rem !important;
         text-align: center;
-        margin-bottom: 1.5rem !important;
-        padding-bottom: 1rem;
-        border-bottom: 3px solid #93c5fd;
+        margin-bottom: 1rem !important;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid #e2e8f0;
     }
     
     /* Warning Messages */
@@ -277,17 +400,72 @@ st.markdown("""
         box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2) !important;
     }
     
-    /* Footer Styling */
+    /* Footer Styling - Tech Theme */
     .footer-text {
         text-align: center;
-        color: #0c4a6e;
-        padding: 2rem;
-        font-size: 1rem;
-        font-weight: 600;
-        background: white;
-        border-radius: 15px;
+        color: #64748b;
+        padding: 1.5rem;
+        font-size: 0.8rem;
+        font-weight: 400;
+        background: transparent;
         margin-top: 3rem;
-        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.1);
+        margin-bottom: 1rem;
+        text-shadow: 0 0 10px rgba(100, 116, 139, 0.3);
+    }
+    
+    /* Pagination Styling - Tech Theme */
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.3rem;
+        margin: 2rem auto;
+        padding: 0.8rem;
+        max-width: 600px;
+    }
+    
+    .stButton > button[kind="secondary"] {
+        background: rgba(30, 41, 59, 0.8) !important;
+        backdrop-filter: blur(10px) !important;
+        color: #60a5fa !important;
+        border: 1px solid rgba(59, 130, 246, 0.3) !important;
+        border-radius: 4px !important;
+        padding: 0.4rem 0.8rem !important;
+        min-width: 36px !important;
+        height: 36px !important;
+        font-size: 0.875rem !important;
+        font-weight: 500 !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        transition: all 0.2s ease !important;
+    }
+    
+    .stButton > button[kind="secondary"]:hover {
+        background: rgba(59, 130, 246, 0.2) !important;
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 12px rgba(59, 130, 246, 0.4) !important;
+    }
+    
+    .stButton > button[kind="primary"] {
+        background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%) !important;
+        color: white !important;
+        border: 1px solid rgba(59, 130, 246, 0.5) !important;
+        border-radius: 4px !important;
+        padding: 0.4rem 0.8rem !important;
+        min-width: 36px !important;
+        height: 36px !important;
+        font-size: 0.875rem !important;
+        font-weight: 700 !important;
+        box-shadow: 0 0 16px rgba(59, 130, 246, 0.6) !important;
+        margin: 0 !important;
+    }
+    
+    .page-info {
+        color: #94a3b8;
+        font-size: 0.8rem;
+        margin: 0.75rem 0 1rem 0;
+        text-align: left;
+        padding-left: 0.5rem;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -295,15 +473,32 @@ st.markdown("""
 # ==========================
 # LOAD DATA
 # ==========================
-@st.cache_resource
-def load_models():
-    with open("index.json", "r", encoding="utf-8") as f:
-        index_data = json.load(f)
-
-    documents = list(index_data.values())
-    doc_keys = list(index_data.keys())
-
-    # Preprocessing
+@st.cache_data
+def load_data():
+    """Load korpus CSV untuk pencarian dan detail dokumen"""
+    df = pd.read_csv("korpus_500_preprocessed.csv")
+    
+    # Buat mapping untuk detail dokumen
+    doc_details = {}
+    documents = []
+    doc_keys = []
+    
+    for idx, row in df.iterrows():
+        doc_name = f"dokumen_{idx}"
+        doc_keys.append(doc_name)
+        
+        # Simpan dokumen yang sudah dipreprocess untuk pencarian
+        documents.append(row['isi'])
+        
+        # Simpan detail lengkap untuk tampilan hasil
+        doc_details[doc_name] = {
+            'judul': row['judul'],
+            'url': row['url'],
+            'isi': row['isi'],
+            'sumber': row['sumber']
+        }
+    
+    # Preprocessing untuk tokenization
     tokenized_docs = [doc.split() for doc in documents]
 
     # TF-IDF Model
@@ -313,33 +508,122 @@ def load_models():
     # BM25 Model
     bm25 = BM25Okapi(tokenized_docs)
     
-    return tfidf_vectorizer, tfidf_matrix, bm25, doc_keys
+    return tfidf_vectorizer, tfidf_matrix, bm25, doc_keys, doc_details
 
-tfidf_vectorizer, tfidf_matrix, bm25, doc_keys = load_models()
+tfidf_vectorizer, tfidf_matrix, bm25, doc_keys, corpus_details = load_data()
 
 # ==========================
 # FUNGSI RETRIEVAL
 # ==========================
-def search_tfidf(query, topk=10):
+def get_snippet(text, query, max_length=200):
+    """Ekstrak snippet yang relevan dari text berdasarkan query"""
+    text = str(text)
+    query_words = query.lower().split()
+    text_lower = text.lower()
+    
+    # Cari posisi pertama kata query muncul
+    best_pos = 0
+    for word in query_words:
+        pos = text_lower.find(word)
+        if pos != -1:
+            best_pos = pos
+            break
+    
+    # Ambil snippet di sekitar posisi tersebut
+    start = max(0, best_pos - 50)
+    end = min(len(text), start + max_length)
+    
+    snippet = text[start:end]
+    
+    # Tambahkan ellipsis jika dipotong
+    if start > 0:
+        snippet = "..." + snippet
+    if end < len(text):
+        snippet = snippet + "..."
+    
+    return snippet.strip()
+
+def search_tfidf(query, topk=None):
     q_vec = tfidf_vectorizer.transform([query])
     scores = (tfidf_matrix @ q_vec.T).toarray().flatten()
-    ranked = np.argsort(scores)[::-1][:topk]
-    return [(doc_keys[i], float(scores[i])) for i in ranked]
+    # Urutkan semua hasil
+    ranked = np.argsort(scores)[::-1]
+    # Filter hasil dengan score > 0 (relevan)
+    results = [(doc_keys[i], float(scores[i])) for i in ranked if scores[i] > 0]
+    # Batasi jika topk ditentukan
+    if topk:
+        results = results[:topk]
+    return results
 
-def search_bm25(query, topk=10):
+def search_bm25(query, topk=None):
     tokenized_q = query.split()
     scores = bm25.get_scores(tokenized_q)
-    ranked = np.argsort(scores)[::-1][:topk]
-    return [(doc_keys[i], float(scores[i])) for i in ranked]
+    # Urutkan semua hasil
+    ranked = np.argsort(scores)[::-1]
+    # Filter hasil dengan score > 0 (relevan)
+    results = [(doc_keys[i], float(scores[i])) for i in ranked if scores[i] > 0]
+    # Batasi jika topk ditentukan
+    if topk:
+        results = results[:topk]
+    return results
+
+def display_result(doc_name, score, rank, query):
+    """Display hasil pencarian dengan format mirip Google"""
+    if doc_name in corpus_details:
+        details = corpus_details[doc_name]
+        judul = details['judul']
+        url = details['url']
+        isi = details['isi']
+        sumber = details['sumber']
+        
+        # Dapatkan snippet yang relevan
+        snippet = get_snippet(isi, query, max_length=180)
+        
+        # Format URL untuk ditampilkan (domain only)
+        display_url = url.replace('https://', '').replace('http://', '')
+        if len(display_url) > 60:
+            display_url = display_url[:60] + "..."
+        
+        st.markdown(f"""
+        <div class="result-card">
+            <span class="result-rank">#{rank}</span>
+            <div class="result-url">
+                <span class="result-source">{sumber}</span>
+                <span style="color: #5f6368;">{display_url}</span>
+            </div>
+            <a href="{url}" target="_blank" class="result-title">{judul}</a>
+            <div class="result-snippet">{snippet}</div>
+            <span class="result-score">📊 Skor Relevansi: {score:.4f}</span>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        # Fallback jika detail tidak ditemukan
+        st.markdown(f"""
+        <div class="result-card">
+            <span class="result-rank">#{rank}</span>
+            <div class="result-title">{doc_name}</div>
+            <div class="result-score">📊 Skor: {score:.4f}</div>
+        </div>
+        """, unsafe_allow_html=True)
 
 # ==========================
 # HEADER
 # ==========================
-st.markdown('<h1 class="main-title">INSITECH</h1>', unsafe_allow_html=True)
-st.markdown('''<p class="subtitle">
-MESIN PENCARI DOKUMEN TEKNOLOGI DAN AI<br/>
-MENGGUNAKAN ALGORITMA TF-IDF DAN BM25
-</p>''', unsafe_allow_html=True)
+# Algorithm selector di pojok kanan atas
+col_spacer, col_algo = st.columns([5, 1])
+with col_algo:
+    method = st.selectbox(
+        "Algoritma:",
+        ["TF-IDF", "BM25", "Bandingkan Keduanya"],
+        index=0,
+        label_visibility="visible"
+    )
+
+# Header dengan title besar seperti Google
+st.markdown('<div class="header-container">', unsafe_allow_html=True)
+st.markdown('<h1 class="main-title">I N S I T E C H</h1>', unsafe_allow_html=True)
+st.markdown('<p class="subtitle">Advanced Document Search • AI-Powered Technology</p>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
 
 # ==========================
 # SEARCH INTERFACE
@@ -347,107 +631,244 @@ MENGGUNAKAN ALGORITMA TF-IDF DAN BM25
 st.markdown('<div class="search-container">', unsafe_allow_html=True)
 
 # Query Input
-query = st.text_input("🔎 Masukkan Query Pencarian:", placeholder="Contoh: artificial intelligence, machine learning, deep learning...")
-
-# Controls in 3 columns
-col_method, col_topk, col_button = st.columns([2, 1, 1])
-
-with col_method:
-    method = st.selectbox(
-        "Pilih Algoritma Pencarian:",
-        ["TF-IDF", "BM25", "Bandingkan Keduanya"],
-        index=0
-    )
-
-with col_topk:
-    topk = st.slider("Jumlah Hasil (Top-K):", 5, 50, 10)
-
-with col_button:
-    search_button = st.button("Cari Sekarang")
+query = st.text_input("", placeholder="🔍 Search for AI and technology documents...", key="search_query", label_visibility="collapsed")
 
 st.markdown('</div>', unsafe_allow_html=True)
+
+# Trigger pencarian otomatis saat query berubah (user tekan Enter)
+search_button = False
+if query.strip() != "" and (query != st.session_state.last_query or method != st.session_state.last_method):
+    search_button = True
+
+# Initialize session state untuk pagination
+if 'current_page' not in st.session_state:
+    st.session_state.current_page = 1
+if 'last_query' not in st.session_state:
+    st.session_state.last_query = ""
+if 'last_method' not in st.session_state:
+    st.session_state.last_method = ""
+if 'search_results' not in st.session_state:
+    st.session_state.search_results = None
+if 'search_performed' not in st.session_state:
+    st.session_state.search_performed = False
+
+# Reset halaman jika query atau method berubah
+if search_button:
+    if query != st.session_state.last_query or method != st.session_state.last_method:
+        st.session_state.current_page = 1
+    st.session_state.last_query = query
+    st.session_state.last_method = method
+    st.session_state.search_performed = True
+
+# Konstanta untuk pagination
+RESULTS_PER_PAGE = 10
 
 # ==========================
 # SEARCH RESULTS
 # ==========================
-if search_button:
-    if query.strip() == "":
+# Gunakan query dan method dari session state jika ada
+active_query = st.session_state.last_query if st.session_state.search_performed else query
+active_method = st.session_state.last_method if st.session_state.search_performed else method
+
+if search_button or st.session_state.search_performed:
+    if active_query.strip() == "":
         st.warning("⚠️ Query tidak boleh kosong. Silakan masukkan kata kunci pencarian.")
+        st.session_state.search_performed = False
     else:
         st.markdown("---")
         
-        if method == "TF-IDF":
+        if active_method == "TF-IDF":
             st.markdown('<h2 class="section-header">Hasil Pencarian TF-IDF</h2>', unsafe_allow_html=True)
-            results = search_tfidf(query, topk)
             
-            if results:
-                for rank, (doc, score) in enumerate(results, 1):
-                    st.markdown(f"""
-                    <div class="result-card">
-                        <span class="result-rank">#{rank}</span>
-                        <div class="result-title">{doc}</div>
-                        <div class="result-score">📈 Skor: {score:.4f}</div>
-                    </div>
-                    """, unsafe_allow_html=True)
+            # Ambil atau hitung hasil (semua hasil relevan)
+            if search_button or st.session_state.search_results is None:
+                all_results = search_tfidf(active_query)
+                st.session_state.search_results = all_results
+            else:
+                all_results = st.session_state.search_results
+            
+            if all_results:
+                # Hitung pagination
+                total_pages = (len(all_results) + RESULTS_PER_PAGE - 1) // RESULTS_PER_PAGE
+                current_page = st.session_state.current_page
+                
+                # Batasi halaman
+                if current_page > total_pages:
+                    st.session_state.current_page = 1
+                    current_page = 1
+                
+                # Ambil hasil untuk halaman saat ini
+                start_idx = (current_page - 1) * RESULTS_PER_PAGE
+                end_idx = min(start_idx + RESULTS_PER_PAGE, len(all_results))
+                page_results = all_results[start_idx:end_idx]
+                
+                # Info hasil
+                st.markdown(f'<p class="page-info">Menampilkan hasil {start_idx + 1}-{end_idx} dari {len(all_results)} untuk "<strong>{active_query}</strong>"</p>', unsafe_allow_html=True)
+                
+                # Tampilkan hasil
+                for idx, (doc, score) in enumerate(page_results):
+                    rank = start_idx + idx + 1
+                    display_result(doc, score, rank, active_query)
+                
+                # Pagination
+                if total_pages > 1:
+                    st.markdown('<div class="pagination-container">', unsafe_allow_html=True)
+                    
+                    # Hitung range halaman yang ditampilkan (maksimal 5 halaman)
+                    page_range = []
+                    if total_pages <= 5:
+                        page_range = list(range(1, total_pages + 1))
+                    else:
+                        if current_page <= 3:
+                            page_range = [1, 2, 3, 4, 5]
+                        elif current_page >= total_pages - 2:
+                            page_range = list(range(total_pages - 4, total_pages + 1))
+                        else:
+                            page_range = list(range(current_page - 2, current_page + 3))
+                    
+                    # Tombol Previous
+                    cols = st.columns([1] + [1]*len(page_range) + [1])
+                    with cols[0]:
+                        if current_page > 1:
+                            if st.button("◄", key="prev_tfidf", type="secondary", use_container_width=True):
+                                st.session_state.current_page = current_page - 1
+                                st.rerun()
+                        else:
+                            st.button("◄", key="prev_tfidf_disabled", type="secondary", use_container_width=True, disabled=True)
+                    
+                    # Tombol nomor halaman
+                    for idx, page_num in enumerate(page_range):
+                        with cols[idx + 1]:
+                            if st.button(str(page_num), key=f"page_tfidf_{page_num}", 
+                                       type="primary" if page_num == current_page else "secondary",
+                                       use_container_width=True):
+                                st.session_state.current_page = page_num
+                                st.rerun()
+                    
+                    # Tombol Next
+                    with cols[-1]:
+                        if current_page < total_pages:
+                            if st.button("►", key="next_tfidf", type="secondary", use_container_width=True):
+                                st.session_state.current_page = current_page + 1
+                                st.rerun()
+                        else:
+                            st.button("►", key="next_tfidf_disabled", type="secondary", use_container_width=True, disabled=True)
+                    
+                    st.markdown('</div>', unsafe_allow_html=True)
             else:
                 st.info("Tidak ada hasil yang ditemukan.")
+                st.session_state.search_performed = False
 
-        elif method == "BM25":
+        elif active_method == "BM25":
             st.markdown('<h2 class="section-header">Hasil Pencarian BM25</h2>', unsafe_allow_html=True)
-            results = search_bm25(query, topk)
             
-            if results:
-                for rank, (doc, score) in enumerate(results, 1):
-                    st.markdown(f"""
-                    <div class="result-card">
-                        <span class="result-rank">#{rank}</span>
-                        <div class="result-title">{doc}</div>
-                        <div class="result-score">📈 Skor: {score:.4f}</div>
-                    </div>
-                    """, unsafe_allow_html=True)
+            # Ambil atau hitung hasil (semua hasil relevan)
+            if search_button or st.session_state.search_results is None:
+                all_results = search_bm25(active_query)
+                st.session_state.search_results = all_results
+            else:
+                all_results = st.session_state.search_results
+            
+            if all_results:
+                # Hitung pagination
+                total_pages = (len(all_results) + RESULTS_PER_PAGE - 1) // RESULTS_PER_PAGE
+                current_page = st.session_state.current_page
+                
+                # Batasi halaman
+                if current_page > total_pages:
+                    st.session_state.current_page = 1
+                    current_page = 1
+                
+                # Ambil hasil untuk halaman saat ini
+                start_idx = (current_page - 1) * RESULTS_PER_PAGE
+                end_idx = min(start_idx + RESULTS_PER_PAGE, len(all_results))
+                page_results = all_results[start_idx:end_idx]
+                
+                # Info hasil
+                st.markdown(f'<p class="page-info">Menampilkan hasil {start_idx + 1}-{end_idx} dari {len(all_results)} untuk "<strong>{active_query}</strong>"</p>', unsafe_allow_html=True)
+                
+                # Tampilkan hasil
+                for idx, (doc, score) in enumerate(page_results):
+                    rank = start_idx + idx + 1
+                    display_result(doc, score, rank, active_query)
+                
+                # Pagination
+                if total_pages > 1:
+                    st.markdown('<div class="pagination-container">', unsafe_allow_html=True)
+                    
+                    # Hitung range halaman yang ditampilkan (maksimal 5 halaman)
+                    page_range = []
+                    if total_pages <= 5:
+                        page_range = list(range(1, total_pages + 1))
+                    else:
+                        if current_page <= 3:
+                            page_range = [1, 2, 3, 4, 5]
+                        elif current_page >= total_pages - 2:
+                            page_range = list(range(total_pages - 4, total_pages + 1))
+                        else:
+                            page_range = list(range(current_page - 2, current_page + 3))
+                    
+                    # Tombol Previous
+                    cols = st.columns([1] + [1]*len(page_range) + [1])
+                    with cols[0]:
+                        if current_page > 1:
+                            if st.button("◄", key="prev_bm25", type="secondary", use_container_width=True):
+                                st.session_state.current_page = current_page - 1
+                                st.rerun()
+                        else:
+                            st.button("◄", key="prev_bm25_disabled", type="secondary", use_container_width=True, disabled=True)
+                    
+                    # Tombol nomor halaman
+                    for idx, page_num in enumerate(page_range):
+                        with cols[idx + 1]:
+                            if st.button(str(page_num), key=f"page_bm25_{page_num}", 
+                                       type="primary" if page_num == current_page else "secondary",
+                                       use_container_width=True):
+                                st.session_state.current_page = page_num
+                                st.rerun()
+                    
+                    # Tombol Next
+                    with cols[-1]:
+                        if current_page < total_pages:
+                            if st.button("►", key="next_bm25", type="secondary", use_container_width=True):
+                                st.session_state.current_page = current_page + 1
+                                st.rerun()
+                        else:
+                            st.button("►", key="next_bm25_disabled", type="secondary", use_container_width=True, disabled=True)
+                    
+                    st.markdown('</div>', unsafe_allow_html=True)
             else:
                 st.info("Tidak ada hasil yang ditemukan.")
+                st.session_state.search_performed = False
 
         else:
             st.markdown('<h2 class="section-header">Perbandingan TF-IDF vs BM25</h2>', unsafe_allow_html=True)
             
+            # Reset search performed untuk mode perbandingan
+            st.session_state.search_performed = False
+            
+            # Untuk mode perbandingan, tampilkan 10 hasil tanpa pagination
             col1, col2 = st.columns(2, gap="large")
 
             # TF-IDF Column
             with col1:
-                st.markdown('<div class="comparison-column">', unsafe_allow_html=True)
                 st.markdown("### TF-IDF")
-                r1 = search_tfidf(query, topk)
+                r1 = search_tfidf(active_query, 10)
                 if r1:
                     for rank, (doc, score) in enumerate(r1, 1):
-                        st.markdown(f"""
-                        <div class="result-card">
-                            <span class="result-rank">#{rank}</span>
-                            <div class="result-title">{doc}</div>
-                            <div class="result-score">Skor: {score:.4f}</div>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        display_result(doc, score, rank, active_query)
                 else:
                     st.info("Tidak ada hasil.")
-                st.markdown('</div>', unsafe_allow_html=True)
 
             # BM25 Column
             with col2:
-                st.markdown('<div class="comparison-column">', unsafe_allow_html=True)
                 st.markdown("### BM25")
-                r2 = search_bm25(query, topk)
+                r2 = search_bm25(active_query, 10)
                 if r2:
                     for rank, (doc, score) in enumerate(r2, 1):
-                        st.markdown(f"""
-                        <div class="result-card">
-                            <span class="result-rank">#{rank}</span>
-                            <div class="result-title">{doc}</div>
-                            <div class="result-score">Skor: {score:.4f}</div>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        display_result(doc, score, rank, active_query)
                 else:
                     st.info("Tidak ada hasil.")
-                st.markdown('</div>', unsafe_allow_html=True)
 
 # ==========================
 # FOOTER INFO

@@ -113,5 +113,5 @@ def preprocess_and_save(input_file, output_file):
 # =========================
 # RUN
 # =========================
-if __name__ == "_main_":
-    preprocess_and_save("korpus_500.csv", "korpus_500_preprocessed.csv")
+if __name__ == "__main__":
+    preprocess_and_save("korpus_500_dedup.csv", "korpus_500_preprocessed.csv")

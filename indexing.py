@@ -1,31 +1,51 @@
 import pandas as pd
+import json
+from collections import defaultdict
 
-df = pd.read_csv("korpus_500_preprocessed.csv")
-documents = df["isi"].astype(str).tolist()
+def build_inverted_index(csv_file, output_json):
+    df = pd.read_csv(csv_file)
 
-inverted = {}
+    if "isi" not in df.columns:
+        raise ValueError("Kolom 'isi' tidak ditemukan di CSV!")
 
-# Bangun inverted index
-for doc_id, text in enumerate(documents):
-    for term in text.split():
-        if term not in inverted:
-            inverted[term] = []
-        if doc_id not in inverted[term]:
-            inverted[term].append(doc_id)
+    inverted_index = defaultdict(lambda: defaultdict(int))
+    doc_meta = {}
+    doc_length = {}
 
-# Simpan manual supaya format seperti yang kamu mau
-with open("inverted_index.json", "w", encoding="utf-8") as f:
-    f.write("{\n")  # buka JSON
+    N = len(df)
 
-    terms = list(inverted.keys())
-    last_term = terms[-1]
+    for doc_id, row in df.iterrows():
+        text = str(row["isi"])
+        tokens = text.split()
 
-    for term in terms:
-        doc_list = ",".join(str(x) for x in inverted[term])  # horizontal list
+        judul = row["judul"] if "judul" in df.columns else ""
+        url = row["url"] if "url" in df.columns else ""
+        doc_meta[str(doc_id)] = {
+            "judul": judul,
+            "url": url
+        }
 
-        if term != last_term:
-            f.write(f'  "{term}":[{doc_list}],\n')
-        else:
-            f.write(f'  "{term}":[{doc_list}]\n')
+        doc_length[str(doc_id)] = len(tokens)
 
-    f.write("}")
+        for tok in tokens:
+            if tok:
+                inverted_index[tok][str(doc_id)] += 1
+
+    inverted_index = {term: dict(postings)
+                      for term, postings in inverted_index.items()}
+
+    index_data = {
+        "N": N,
+        "doc_meta": doc_meta,
+        "doc_length": doc_length,
+        "inverted_index": inverted_index
+    }
+
+    with open(output_json, "w", encoding="utf-8") as f:
+        json.dump(index_data, f, ensure_ascii=False, indent=2)
+
+    print(f"Selesai membangun indeks untuk {N} dokumen.")
+    print(f"Disimpan ke: {output_json}")
+
+if __name__ == "__main__":
+    build_inverted_index("korpus_500_preprocessed.csv", "indexing.json")

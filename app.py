@@ -31,6 +31,132 @@ st.markdown("""
     .stApp {
         background: #052659;
         color: #FFFFFF;
+        position: relative;
+        overflow-x: hidden;
+    }
+    
+    /* Animated Tech Background */
+    .tech-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.5;
+    }
+    
+    /* Moving particles */
+    .particle {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: #89CFF0;
+        border-radius: 50%;
+        animation: float 20s infinite linear;
+        box-shadow: 0 0 20px rgba(137, 207, 240, 1), 0 0 40px rgba(137, 207, 240, 0.5);
+    }
+    
+    .particle:nth-child(1) { left: 10%; animation-duration: 15s; animation-delay: 0s; }
+    .particle:nth-child(2) { left: 20%; animation-duration: 18s; animation-delay: 2s; }
+    .particle:nth-child(3) { left: 30%; animation-duration: 22s; animation-delay: 4s; }
+    .particle:nth-child(4) { left: 40%; animation-duration: 16s; animation-delay: 1s; }
+    .particle:nth-child(5) { left: 50%; animation-duration: 20s; animation-delay: 3s; }
+    .particle:nth-child(6) { left: 60%; animation-duration: 19s; animation-delay: 5s; }
+    .particle:nth-child(7) { left: 70%; animation-duration: 17s; animation-delay: 2s; }
+    .particle:nth-child(8) { left: 80%; animation-duration: 21s; animation-delay: 4s; }
+    .particle:nth-child(9) { left: 90%; animation-duration: 23s; animation-delay: 1s; }
+    
+    @keyframes float {
+        0% {
+            transform: translateY(100vh) translateX(0);
+            opacity: 0;
+        }
+        10% {
+            opacity: 0.8;
+        }
+        90% {
+            opacity: 0.8;
+        }
+        100% {
+            transform: translateY(-100px) translateX(100px);
+            opacity: 0;
+        }
+    }
+    
+    /* Grid lines */
+    .grid-lines {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            linear-gradient(rgba(137, 207, 240, 0.12) 2px, transparent 2px),
+            linear-gradient(90deg, rgba(137, 207, 240, 0.12) 2px, transparent 2px);
+        background-size: 60px 60px;
+        animation: gridMove 20s linear infinite;
+    }
+    
+    @keyframes gridMove {
+        0% {
+            transform: translateY(0);
+        }
+        100% {
+            transform: translateY(60px);
+        }
+    }
+    
+    /* Diagonal tech lines */
+    .tech-line {
+        position: absolute;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, rgba(137, 207, 240, 0.8), transparent);
+        animation: moveLine 8s linear infinite;
+        box-shadow: 0 0 10px rgba(137, 207, 240, 0.6);
+    }
+    
+    .tech-line:nth-child(1) { 
+        top: 20%; 
+        width: 500px; 
+        left: -500px;
+        animation-delay: 0s;
+    }
+    .tech-line:nth-child(2) { 
+        top: 50%; 
+        width: 600px; 
+        left: -600px;
+        animation-delay: 3s;
+    }
+    .tech-line:nth-child(3) { 
+        top: 80%; 
+        width: 550px; 
+        left: -550px;
+        animation-delay: 6s;
+    }
+    
+    @keyframes moveLine {
+        0% {
+            left: -600px;
+            opacity: 0;
+        }
+        10% {
+            opacity: 1;
+        }
+        90% {
+            opacity: 1;
+        }
+        100% {
+            left: 100%;
+            opacity: 0;
+        }
+    }
+    
+    /* Ensure content is above background */
+    .stApp > div {
+        position: relative;
+        z-index: 1;
     }
     
     /* Hide Streamlit Branding */
@@ -41,7 +167,7 @@ st.markdown("""
     /* Header Container */
     .header-container {
         text-align: center;
-        padding: 3rem 2rem 2rem 2rem;
+        padding: 0 2rem 1.5rem 2rem;
         max-width: 1200px;
         margin: 0 auto;
         position: relative;
@@ -70,8 +196,8 @@ st.markdown("""
     /* Algorithm Selector in Top Right */
     .algorithm-selector {
         position: fixed;
-        top: 1rem;
-        right: 1rem;
+        top: 0.5rem;
+        right: 0.5rem;
         z-index: 1000;
         background: rgba(255, 255, 255, 0.9);
         backdrop-filter: blur(10px);
@@ -84,14 +210,14 @@ st.markdown("""
     /* Title Styling - Tech Style */
     .main-title {
         text-align: center;
-        font-size: 4.5rem;
+        font-size: 6rem;
         font-weight: 700;
         background: linear-gradient(135deg, #89CFF0 0%, #FFFFFF 50%, #89CFF0 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
         margin-bottom: 0.5rem;
-        margin-top: 0;
+        margin-top: 0.5rem;
         letter-spacing: 0.1em;
         text-shadow: 0 0 40px rgba(137, 207, 240, 0.8);
         position: relative;
@@ -107,7 +233,7 @@ st.markdown("""
         text-align: center;
         color: #FFFFFF;
         font-size: 0.95rem;
-        margin-bottom: 2.5rem;
+        margin-bottom: 1rem;
         font-weight: 500;
         line-height: 1.6;
         letter-spacing: 0.05em;
@@ -117,7 +243,7 @@ st.markdown("""
     /* Search Box Container */
     .search-container {
         max-width: 600px;
-        margin: 0 auto 3rem auto;
+        margin: 0 auto 1.5rem auto;
         padding: 0;
     }
     
@@ -635,6 +761,25 @@ with col_algo:
         index=0,
         label_visibility="visible"
     )
+
+# Animated Tech Background
+st.markdown("""
+<div class="tech-background">
+    <div class="grid-lines"></div>
+    <div class="tech-line"></div>
+    <div class="tech-line"></div>
+    <div class="tech-line"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+</div>
+""", unsafe_allow_html=True)
 
 # Header dengan title besar seperti Google
 st.markdown('<div class="header-container">', unsafe_allow_html=True)
